@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface Column<T> {
-  id: keyof T;
+  id: keyof T | string; // Permitir 'string' como opción adicional
   label: string;
   renderCell?: (value: T[keyof T]) => React.ReactNode;
 }

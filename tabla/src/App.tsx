@@ -4,14 +4,14 @@ import React from 'react';
 import DataGrid from './component/datagrid';
 
 interface RowData {
-  id: number;
+  id: number ;
   name: string;
   age: number;
   date: Date;
 }
 
 // Ajustamos la definición de las columnas para permitir renderCell opcionalmente
-const columns: { id: keyof RowData; label: string; renderCell?: (value: string | number | Date) => React.ReactNode }[] = [
+const columns = [
   { id: 'id', label: 'ID' },
   { id: 'name', label: 'Name' },
   { id: 'age', label: 'Age' },
@@ -22,7 +22,6 @@ const columns: { id: keyof RowData; label: string; renderCell?: (value: string |
       return String(value);
     }
   },
-  // Columna de saludo con id 'saludo'
   { id: 'saludo', label: 'Saludo', renderCell: () => {
     return "Hola";
   }
