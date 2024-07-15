@@ -1,37 +1,60 @@
-// src/components/Header.tsx
-
 import React from 'react';
 
-const Header: React.FC<{ columns: any[], columnOrder: string[], onColumnOrderChange: (newOrder: string[]) => void, onFilterChange: (columnId: string, value: string) => void }> = ({ columns, columnOrder, onColumnOrderChange, onFilterChange }) => {
+interface Column<T> {
+  id: keyof T;
+  label: string;
+}
 
-  const handleChangeOrder = (newOrder: string[]) => {
-    onColumnOrderChange(newOrder);
+interface HeaderProps<T> {
+  columns: Column<T>[];
+  onFilterChange: (columnId: keyof T, value: string) => void;
+  onSortChange: (columnId: keyof T) => void;
+  sortConfig: { columnId: keyof T; direction: 'asc' | 'desc' } | null;
+}
+
+const Header = <T,>({
+  columns,
+  onFilterChange,
+  onSortChange,
+  sortConfig,
+}: HeaderProps<T>) => {
+
+  const handleSort = (columnId: keyof T) => {
+    onSortChange(columnId);
   };
 
-  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>, columnId: string) => {
+  const handleFilterChange = (columnId: keyof T, event: React.ChangeEvent<HTMLInputElement>) => {
     onFilterChange(columnId, event.target.value);
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', padding: '10px', backgroundColor: '#f0f0f0', borderBottom: '1px solid #ccc' }}>
-      {columnOrder.map((columnId, index) => {
-        const column = columns.find(col => col.id === columnId);
-        if (!column) return null;
-        return (
-          <div key={index} style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+    <div style={{ display: 'flex', borderBottom: '1px solid #ddd', backgroundColor: '#f1f1f1' }}>
+      {columns.map(column => (
+        <div
+          key={String(column.id)}
+          style={{
+            flex: 1,
+            padding: '10px',
+            display: 'flex',
+            alignItems: 'center',
+            cursor: 'pointer'
+          }}
+          onClick={() => handleSort(column.id)}
+        >
+          <span style={{ marginRight: '10px' }}>
             {column.label}
-            <input
-              type="text"
-              placeholder={`Filter ${column.label}`}
-              onChange={(event) => handleFilterChange(event, columnId)}
-              style={{ marginLeft: '10px', padding: '6px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '14px' }}
-            />
-            <button onClick={() => handleChangeOrder([...columnOrder.slice(0, index), ...columnOrder.slice(index + 1), columnId])} style={{ marginLeft: '10px', padding: '6px 10px', backgroundColor: '#007bff', color: '#fff', borderRadius: '4px', cursor: 'pointer', border: 'none', fontSize: '14px' }}>
-              Move Left
-            </button>
-          </div>
-        );
-      })}
+            {sortConfig && sortConfig.columnId === column.id && (
+              <span>{sortConfig.direction === 'asc' ? ' 🔼' : ' 🔽'}</span>
+            )}
+          </span>
+          <input
+            type="text"
+            placeholder={`Filter ${column.label}`}
+            onChange={(event) => handleFilterChange(column.id, event)}
+            style={{ flex: 1 }}
+          />
+        </div>
+      ))}
     </div>
   );
 };
