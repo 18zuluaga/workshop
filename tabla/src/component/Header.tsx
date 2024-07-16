@@ -44,7 +44,7 @@ const Header = <T,>({ columns, onFilterChange, onSortChange, sortConfig, columIn
         >
           <span style={{ marginRight: '10px' }}>
             {column.label}
-            {columInMoment!.id === column.id ?(
+            {columInMoment?.id === column.id ?(
               <span onClick={() => handleSort(column.id )}>{sortConfig?.direction === 'asc' ? ' 🔼' : ' 🔽'}</span>
             ): null}
           </span>

@@ -67,7 +67,7 @@ const rows: RowData[] = [
 const App: React.FC = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '80vw', margin: 'auto' }}>
-      <DataGrid<RowData> columns={columns} rows={rows} />
+      <DataGrid<RowData> columns={columns} rows={rows} limit={5}/>
     </div>
   );
 };

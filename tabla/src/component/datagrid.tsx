@@ -13,15 +13,16 @@ interface Column<T> {
 interface DataGridProps<T> {
   columns: Column<T>[];
   rows: T[];
+  limit: number;
 }
 
-const DataGrid = <T,>({ columns, rows }: DataGridProps<T>) => {
+const DataGrid = <T,>({ columns, rows, limit }: DataGridProps<T>) => {
   const [columnOrder, setColumnOrder] = React.useState<(number | string)[]>(columns.map(col => col.id));
   const [filters, setFilters] = React.useState<{ [key: string]: string }>({});
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [sortConfig, setSortConfig] = React.useState<{ columnId: string | number; direction: 'asc' | 'desc' } | null>(null);
   const [columInMoment, setColumInMoment] = React.useState<Column<T> | null>(null)
-  const itemsPerPage = 10;
+  const itemsPerPage = limit;
 
   React.useEffect(() => {
     setColumnOrder(columns.map(col => col.id));
@@ -132,42 +133,6 @@ const DataGrid = <T,>({ columns, rows }: DataGridProps<T>) => {
       ))}
 
       <Pagination currentPage={currentPage} totalPages={totalPages} onPreviousPage={handlePreviousPage} onNextPage={handleNextPage}  />
-
-      <div style={{ marginTop: '10px', textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <button
-          onClick={handlePreviousPage}
-          style={{
-            padding: '6px 12px',
-            fontSize: '14px',
-            cursor: 'pointer',
-            backgroundColor: '#007bff',
-            color: '#fff',
-            borderRadius: '4px',
-            border: 'none',
-            marginRight: '5px'
-          }}
-          disabled={currentPage === 1}
-        >
-          &lt;
-        </button>
-        <span style={{ fontSize: '14px', margin: '0 10px' }}>{currentPage}</span>
-        <button
-          onClick={handleNextPage}
-          style={{
-            padding: '6px 12px',
-            fontSize: '14px',
-            cursor: 'pointer',
-            backgroundColor: '#007bff',
-            color: '#fff',
-            borderRadius: '4px',
-            border: 'none',
-            marginLeft: '5px'
-          }}
-          disabled={currentPage === totalPages}
-        >
-          &gt;
-        </button>
-      </div>
     </div>
   );
 };
