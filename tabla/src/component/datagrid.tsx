@@ -5,9 +5,9 @@ import getRenderCell from './getRenderCell';
 import Pagination from './Pagination';
 
 interface Column<T> {
-  id: keyof T | string; // Permitir 'string' como opción adicional
+  id: number | string; 
   label: string;
-  renderCell?: (value: T[keyof T]) => React.ReactNode;
+  renderCell?: (value: T) => React.ReactNode;
 }
 
 interface DataGridProps<T> {
@@ -16,18 +16,18 @@ interface DataGridProps<T> {
 }
 
 const DataGrid = <T,>({ columns, rows }: DataGridProps<T>) => {
-  const [columnOrder, setColumnOrder] = React.useState<(keyof T | string)[]>(columns.map(col => col.id));
+  const [columnOrder, setColumnOrder] = React.useState<(number | string)[]>(columns.map(col => col.id));
   const [filters, setFilters] = React.useState<{ [key: string]: string }>({});
   const [currentPage, setCurrentPage] = React.useState<number>(1);
-  const [sortConfig, setSortConfig] = React.useState<{ columnId: keyof T; direction: 'asc' | 'desc' } | null>(null);
-  const [columInMoment, setColumInMoment] = React.useState<Column<T> | null>({ id: 'id', label: 'ID' })
+  const [sortConfig, setSortConfig] = React.useState<{ columnId: string | number; direction: 'asc' | 'desc' } | null>(null);
+  const [columInMoment, setColumInMoment] = React.useState<Column<T> | null>(null)
   const itemsPerPage = 10;
 
   React.useEffect(() => {
     setColumnOrder(columns.map(col => col.id));
   }, [columns]);
 
-  const handleSortChange = (columnId: keyof T) => {
+  const handleSortChange = (columnId: string | number) => {
     setSortConfig(prevState => {
         return {
           columnId,
@@ -36,7 +36,7 @@ const DataGrid = <T,>({ columns, rows }: DataGridProps<T>) => {
     });
   };
 
-  const handleFilterChange = (columnId: keyof T | string, value: string) => {
+  const handleFilterChange = (columnId: number | string, value: string) => {
     setFilters({
       ...filters,
       [String(columnId)]: value.trim().toLowerCase(),
@@ -63,8 +63,8 @@ const DataGrid = <T,>({ columns, rows }: DataGridProps<T>) => {
 
   const sortedData = sortConfig
     ? filteredData.sort((a, b) => {
-        const aValue = a[sortConfig.columnId];
-        const bValue = b[sortConfig.columnId];
+        const aValue = a[sortConfig.columnId as keyof T];
+        const bValue = b[sortConfig.columnId as keyof T];
 
         if (aValue instanceof Date && bValue instanceof Date) {
           return sortConfig.direction === 'asc' ? aValue.getTime() - bValue.getTime() : bValue.getTime() - aValue.getTime();
@@ -96,7 +96,7 @@ const DataGrid = <T,>({ columns, rows }: DataGridProps<T>) => {
 
   return (
     <div style={{ border: '1px solid #ccc', borderRadius: '4px', overflow: 'hidden', marginTop: '20px' }}>
-      <Header<T>
+      <Header
         columns={columns}
         onFilterChange={handleFilterChange}
         onSortChange={handleSortChange}
@@ -116,9 +116,9 @@ const DataGrid = <T,>({ columns, rows }: DataGridProps<T>) => {
         >
           {columnOrder.map((columnId) => {
             const column = columns.find(col => col.id === columnId);
-            if (!column) return null; // Salir si la columna no está definida
+            if (!column) return null;
 
-            const renderCell = column.renderCell || getRenderCell(column);
+            const renderCell = column.renderCell || getRenderCell<T>(column);
 
             return (
               <Cell
@@ -132,6 +132,42 @@ const DataGrid = <T,>({ columns, rows }: DataGridProps<T>) => {
       ))}
 
       <Pagination currentPage={currentPage} totalPages={totalPages} onPreviousPage={handlePreviousPage} onNextPage={handleNextPage}  />
+
+      <div style={{ marginTop: '10px', textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <button
+          onClick={handlePreviousPage}
+          style={{
+            padding: '6px 12px',
+            fontSize: '14px',
+            cursor: 'pointer',
+            backgroundColor: '#007bff',
+            color: '#fff',
+            borderRadius: '4px',
+            border: 'none',
+            marginRight: '5px'
+          }}
+          disabled={currentPage === 1}
+        >
+          &lt;
+        </button>
+        <span style={{ fontSize: '14px', margin: '0 10px' }}>{currentPage}</span>
+        <button
+          onClick={handleNextPage}
+          style={{
+            padding: '6px 12px',
+            fontSize: '14px',
+            cursor: 'pointer',
+            backgroundColor: '#007bff',
+            color: '#fff',
+            borderRadius: '4px',
+            border: 'none',
+            marginLeft: '5px'
+          }}
+          disabled={currentPage === totalPages}
+        >
+          &gt;
+        </button>
+      </div>
     </div>
   );
 };

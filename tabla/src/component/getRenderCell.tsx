@@ -1,9 +1,9 @@
 import React from 'react';
 
 interface Column<T> {
-  id: keyof T | string; // Permitir 'string' como opción adicional
+  id: number | string;
   label: string;
-  renderCell?: (value: T[keyof T]) => React.ReactNode;
+  renderCell?: (value: T) => React.ReactNode;
 }
 
 const defaultRenderCell = (value: any) => {
@@ -22,7 +22,7 @@ const numberRenderCell = (value: number) => {
   return value.toFixed(2);
 };
 
-const getRenderCell = <T,>(column: Column<T>): ((value: T[keyof T]) => React.ReactNode) => {
+const getRenderCell = <T,>(column: Column<T>): ((value: T) => React.ReactNode) => {
   const renderCell = column.renderCell;
   
   if (renderCell) {
@@ -33,19 +33,19 @@ const getRenderCell = <T,>(column: Column<T>): ((value: T[keyof T]) => React.Rea
 
   switch (columnType) {
     case 'boolean':
-      return booleanRenderCell as (value: T[keyof T]) => React.ReactNode;
+      return booleanRenderCell as (value: T) => React.ReactNode;
     case 'number':
-      return numberRenderCell as (value: T[keyof T]) => React.ReactNode;
+      return numberRenderCell as (value: T) => React.ReactNode;
     case 'object':
-      if (column.id instanceof Date) {
-        return dateRenderCell as (value: T[keyof T]) => React.ReactNode;
+      if (column.id) {
+        return dateRenderCell as (value: T) => React.ReactNode;
       }
       break;
     default:
       return defaultRenderCell;
   }
 
-  // Si no se maneja el tipo de objeto específico, se utiliza la función de renderizado predeterminada
+  
   return defaultRenderCell;
 };
 
