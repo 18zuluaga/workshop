@@ -13,8 +13,8 @@ interface RowData {
 
 // Ajustamos la definición de las columnas para permitir renderCell opcionalmente
 const columns = [
-  { id: 'id', label: 'ID', width: '20%' },
-  { id: 'name', label: 'Name', width: '20%' },
+  { id: 'id', label: 'ID', width: '8%' },
+  { id: 'name', label: 'Name', width: '32%' },
   { id: 'age', label: 'Age', width: '20%' },
   { id: 'date', label: 'Date', width: '20%', renderCell: (value : RowData) => {
       if (value instanceof Date) {
@@ -24,6 +24,7 @@ const columns = [
     }
   },
   { id:'mujer', label: 'Es mujer', width: '20%' },
+  { id: 'actions', label: 'Actions', width: '20%', renderCell: (value : RowData) => <button onClick={() => console.log(value)}>Delete</button>},
 ];
 
 const rows: RowData[] = [

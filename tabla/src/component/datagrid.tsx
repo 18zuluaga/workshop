@@ -44,6 +44,7 @@ const DataGrid = <T,>({ columns, rows, limit }: DataGridProps<T>) => {
       ...filters,
       [String(columnId)]: value.trim().toLowerCase(),
     });
+    console.log(filters)
   };
 
   const filteredData = rows.filter(row =>
@@ -51,7 +52,7 @@ const DataGrid = <T,>({ columns, rows, limit }: DataGridProps<T>) => {
       const cellValue = row[columnId as keyof T];
       const filterValue = filters[String(columnId)];
       if (!filterValue) return true;
-
+      console.log(cellValue, filterValue)
       if (cellValue instanceof Date) {
         return cellValue.toLocaleDateString().toLowerCase().includes(filterValue);
       }
