@@ -3,10 +3,12 @@ import Header from './Header';
 import Cell from './Cell';
 import getRenderCell from './getRenderCell';
 import Pagination from './Pagination';
+import ItemsPerPage from './itemsPerPage';
 
 interface Column<T> {
   id: number | string; 
   label: string;
+  width: string;
   renderCell?: (value: T) => React.ReactNode;
 }
 
@@ -22,7 +24,7 @@ const DataGrid = <T,>({ columns, rows, limit }: DataGridProps<T>) => {
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [sortConfig, setSortConfig] = React.useState<{ columnId: string | number; direction: 'asc' | 'desc' } | null>(null);
   const [columInMoment, setColumInMoment] = React.useState<Column<T> | null>(null)
-  const itemsPerPage = limit;
+  const [itemsPerPage, setItemsPerPage] = React.useState<number>(limit);
 
   React.useEffect(() => {
     setColumnOrder(columns.map(col => col.id));
@@ -96,7 +98,7 @@ const DataGrid = <T,>({ columns, rows, limit }: DataGridProps<T>) => {
   };
 
   return (
-    <div style={{ border: '1px solid #ccc', borderRadius: '4px', overflow: 'hidden', marginTop: '20px' }}>
+    <div style={{ border: '1px solid #ccc', borderRadius: '5px', marginTop: '20px' }}>
       <Header
         columns={columns}
         onFilterChange={handleFilterChange}
@@ -112,7 +114,7 @@ const DataGrid = <T,>({ columns, rows, limit }: DataGridProps<T>) => {
           style={{
             display: 'flex',
             borderTop: '1px solid #ddd',
-            backgroundColor: rowIndex % 2 === 0 ? '#f9f9f9' : 'transparent'
+            backgroundColor: '#f9f9f9' 
           }}
         >
           {columnOrder.map((columnId) => {
@@ -126,13 +128,22 @@ const DataGrid = <T,>({ columns, rows, limit }: DataGridProps<T>) => {
                 key={String(columnId)}
                 value={row[columnId as keyof T]}
                 renderCell={renderCell}
+                width={column.width}
               />
             );
           })}
         </div>
       ))}
 
-      <Pagination currentPage={currentPage} totalPages={totalPages} onPreviousPage={handlePreviousPage} onNextPage={handleNextPage}  />
+      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+        <div style={{marginLeft: "20px"}}>
+          <span>1-{itemsPerPage} of {totalItems}</span>
+        </div>
+        <div style={{display: 'flex', alignItems: 'center', gap: '40px'}}>
+          <ItemsPerPage itemsPerPage={itemsPerPage} setItemsPerPage={setItemsPerPage}/>
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPreviousPage={handlePreviousPage} onNextPage={handleNextPage}/>
+        </div>
+      </div>
     </div>
   );
 };

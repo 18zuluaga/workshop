@@ -1,5 +1,6 @@
 import React from 'react';
-
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
@@ -9,41 +10,10 @@ interface PaginationProps {
 
 const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPreviousPage, onNextPage }) => {
   return (
-    <div style={{ textAlign: 'center', display: 'flex',justifyContent:'end', alignItems:'center', width: '100%', height: '5vh' }}>
-      <button
-        onClick={onPreviousPage}
-        style={{
-          padding: '6px 12px',
-          fontSize: '14px',
-          fontWeight: 'bold',
-          cursor: 'pointer',
-          backgroundColor: '#007bff',
-          color: '#fff',
-          borderRadius: '4px',
-          border: 'none',
-        }}
-        disabled={currentPage === 1}
-      >
-        &lt;
-      </button>
-      <span style={{ fontSize: '14px', margin: '0 10px', fontWeight: 'bold', }}>{currentPage}</span>
-      <button
-        onClick={onNextPage}
-        style={{
-          padding: '6px 12px',
-          fontSize: '14px',
-          fontWeight: 'bold',
-          cursor: 'pointer',
-          backgroundColor: '#007bff',
-          color: '#fff',
-          borderRadius: '4px',
-          border: 'none',
-          marginRight: '15px'
-        }}
-        disabled={currentPage === totalPages}
-      >
-        &gt;
-      </button>
+    <div style={{ textAlign: 'center', display: 'flex',justifyContent:'end', alignItems:'center', height: '5vh' }}>
+      <KeyboardArrowLeftIcon onClick={onPreviousPage}/>
+      <span style={{ fontSize: '16px', margin: '0 10px', fontWeight: 'bold', display: 'flex', alignItems: "center" }}>{currentPage}<span style={{fontSize: "25px", fontWeight: '100'}}>/</span>{totalPages}</span>
+      <KeyboardArrowRightIcon onClick={onNextPage}/>
     </div>
   );
 };

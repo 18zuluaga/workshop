@@ -1,8 +1,11 @@
 import React from 'react';
+import SouthIcon from '@mui/icons-material/South';
+import NorthIcon from '@mui/icons-material/North';
 
 interface Column<T> {
-  id: number | string; // Permitir 'string' como opción adicional
+  id: number | string; 
   label: string;
+  width: string;
   renderCell?: (value: T) => React.ReactNode;
 }
 
@@ -34,7 +37,7 @@ const Header = <T,>({ columns, onFilterChange, onSortChange, sortConfig, columIn
         <div
           key={String(column.id)}
           style={{
-            flex: 1,
+            width: column.width,
             padding: '10px',
             display: 'flex',
             alignItems: 'center',
@@ -42,10 +45,10 @@ const Header = <T,>({ columns, onFilterChange, onSortChange, sortConfig, columIn
           }}
           onClick={() => handleColumInMoment(column)}
         >
-          <span style={{ marginRight: '10px' }}>
+          <span style={{ marginRight: '10px', display: 'flex', alignItems:'center' }}>
             {column.label}
             {columInMoment?.id === column.id ?(
-              <span onClick={() => handleSort(column.id )}>{sortConfig?.direction === 'asc' ? ' 🔼' : ' 🔽'}</span>
+              <span onClick={() => handleSort(column.id )}>{sortConfig?.direction === 'asc' ? <NorthIcon sx={{ fontSize: 20 }}/> : <SouthIcon  sx={{ fontSize: 20 }}/>}</span>
             ): null}
           </span>
           <input

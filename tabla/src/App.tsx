@@ -13,17 +13,17 @@ interface RowData {
 
 // Ajustamos la definición de las columnas para permitir renderCell opcionalmente
 const columns = [
-  { id: 'id', label: 'ID' },
-  { id: 'name', label: 'Name' },
-  { id: 'age', label: 'Age' },
-  { id: 'date', label: 'Date', renderCell: (value : RowData) => {
+  { id: 'id', label: 'ID', width: '20%' },
+  { id: 'name', label: 'Name', width: '20%' },
+  { id: 'age', label: 'Age', width: '20%' },
+  { id: 'date', label: 'Date', width: '20%', renderCell: (value : RowData) => {
       if (value instanceof Date) {
         return value.toLocaleDateString();
       }
       return String(value);
     }
   },
-  { id:'mujer', label: 'Es mujer' },
+  { id:'mujer', label: 'Es mujer', width: '20%' },
 ];
 
 const rows: RowData[] = [
@@ -67,7 +67,7 @@ const rows: RowData[] = [
 const App: React.FC = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '80vw', margin: 'auto' }}>
-      <DataGrid<RowData> columns={columns} rows={rows} limit={5}/>
+      <DataGrid<RowData> columns={columns} rows={rows} limit={10}/>
     </div>
   );
 };
